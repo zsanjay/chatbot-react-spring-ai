@@ -46,17 +46,20 @@ export default function Login() {
     event.preventDefault();
     if (validateForm()) {
       const { username, password } = values;
-      const { data } = await axios.post(loginRoute, {
+      const response  = await axios.post(loginRoute, {
         username,
         password,
       });
-      if (data.status === false) {
-        toast.error(data.msg, toastOptions);
+
+      console.log("login response = " + response);
+      
+      if (response.status === 401) {
+        toast.error(response.data, toastOptions);
       }
-      if (data.status === true) {
+      if (response.status === 200) {
         localStorage.setItem(
           appLocalKey,
-          JSON.stringify(data.user)
+          JSON.stringify(response.data)
         );
 
         navigate("/");
