@@ -1,8 +1,8 @@
 package com.zsanjay.chatbot.entity;
 
 import jakarta.persistence.*;
-
 import java.util.List;
+
 
 @Entity
 @Table(name = "chatbot_user")
@@ -13,8 +13,14 @@ public class User {
     private String username;
     private String email;
     private String password;
-    private List<String> messages;
-    private List<String> responses;
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "chat_messages", joinColumns = @JoinColumn(name = "user_id"))
+    private List<Chat> messages;
+    @Lob
+    @Column(name = "avatar_image", columnDefinition = "TEXT")
+    private String avatarImage;
+    private boolean isAvatarImageSet;
 
     public Long getUserId() {
         return userId;
@@ -48,19 +54,26 @@ public class User {
         this.password = password;
     }
 
-    public List<String> getMessages() {
+    public String getAvatarImage() {
+        return avatarImage;
+    }
+
+    public void setAvatarImage(String avatarImage) {
+        this.avatarImage = avatarImage;
+    }
+
+    public boolean isAvatarImageSet() {
+        return isAvatarImageSet;
+    }
+
+    public void setAvatarImageSet(boolean avatarImageSet) {
+        isAvatarImageSet = avatarImageSet;
+    }
+
+    public List<Chat> getMessages() {
         return messages;
     }
-
-    public void setMessages(List<String> messages) {
+    public void setMessages(List<Chat> messages) {
         this.messages = messages;
-    }
-
-    public List<String> getResponses() {
-        return responses;
-    }
-
-    public void setResponses(List<String> responses) {
-        this.responses = responses;
     }
 }

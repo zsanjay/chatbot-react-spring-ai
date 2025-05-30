@@ -22,11 +22,12 @@ public class AuthController {
     public AuthController(AuthService authService) {
         this.authService = authService;
     }
+
     @PostMapping("/register")
-    public ResponseEntity<String> register(@RequestBody @Valid ChatBotUser chatBotUser) {
+    public ResponseEntity<?> register(@RequestBody @Valid ChatBotUser chatBotUser) {
         try {
-            Long userId =  this.authService.register(chatBotUser);
-            return ResponseEntity.ok("User is successfully registered with the " + userId);
+            chatBotUser =  this.authService.register(chatBotUser);
+            return ResponseEntity.ok(chatBotUser);
         } catch(Exception exception) {
             log.error("Something went wrong " + exception.getMessage());
             return ResponseEntity.badRequest().body(exception.getMessage());

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import styled from "styled-components";
 import Logo from "../assets/logo.svg";
 
@@ -17,10 +17,12 @@ export default function Contacts({ contacts, changeChat } : ContactsType) {
 
   useEffect(() => {
     const loadContact = async () => {
-        const stored = localStorage.getItem(appLocalKey) || '';
-        const data = await JSON.parse(stored);
-        setCurrentUserName(data.username);
-        setCurrentUserImage(data.avatarImage);
+        const stored = localStorage.getItem(appLocalKey) || null;
+        if(stored) {
+          const data = await JSON.parse(stored);
+          setCurrentUserName(data.username);
+          setCurrentUserImage(data.avatarImage);
+        }
     }
     loadContact();
     }, []);

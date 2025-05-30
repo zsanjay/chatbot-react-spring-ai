@@ -1,28 +1,24 @@
-import React, { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import ChatInput from "../components/ChatInput";
 import Logout from "./Logout";
 import { v4 as uuidv4 } from "uuid";
 import axios from "axios";
-import { sendMessageRoute, recieveMessageRoute } from "../utils/APIRoutes";
+import { chatRoute } from "../utils/APIRoutes";
 
 interface Message {
-    fromSelf : boolean,
-    message : any
+    message : string,
+    response : string
 }
 
 interface ChatType {
-    currentChat : any,
-    socket : any
+    currentChat : any
 }
 
-
-
-export default function ChatContainer({ currentChat , socket } : ChatType) {
+export default function ChatContainer({ currentChat } : ChatType) {
 
   const [messages, setMessages] = useState<Message[]>([]);
   const scrollRef = useRef<HTMLDivElement | null>(null);
-  const [arrivalMessage, setArrivalMessage] = useState<Message>();
 
   const appLocalKey =  import.meta.env.VITE_APP_LOCALHOST_KEY;
 
@@ -30,10 +26,7 @@ export default function ChatContainer({ currentChat , socket } : ChatType) {
     const loadChat = async () => {
         const stored = localStorage.getItem(appLocalKey) || '';
         const data = await JSON.parse(stored);
-        const response = await axios.post(recieveMessageRoute, {
-          from: data._id,
-          to: currentChat._id,
-        });
+        const response = await axios.get(`${chatRoute}/${data._id}`); 
         setMessages(response.data);
       }
 
@@ -54,33 +47,16 @@ export default function ChatContainer({ currentChat , socket } : ChatType) {
 
     const stored = localStorage.getItem(appLocalKey) || '';
     const data = await JSON.parse(stored);
-    socket.current.emit("send-msg", {
-      to: currentChat._id,
-      from: data._id,
-      msg,
-    });
-    await axios.post(sendMessageRoute, {
-      from: data._id,
-      to: currentChat._id,
+
+    const response = await axios.post(chatRoute, {
+      userId: data._id,
       message: msg,
     });
 
     const msgs = [...messages];
-    msgs.push({ fromSelf: true, message: msg });
+    msgs.push(response.data);
     setMessages(msgs);
   };
-
-  useEffect(() => {
-    if (socket.current) {
-      socket.current.on("msg-recieve", (msg : any) => {
-        setArrivalMessage({ fromSelf: false, message: msg });
-      });
-    }
-  }, []);
-
-  useEffect(() => {
-    arrivalMessage && setMessages((prev) => [...prev, arrivalMessage]);
-  }, [arrivalMessage]);
 
   useEffect(() => {
     scrollRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -107,12 +83,17 @@ export default function ChatContainer({ currentChat , socket } : ChatType) {
           return (
             <div ref={scrollRef} key={uuidv4()}>
               <div
-                className={`message ${
-                  message.fromSelf ? "sended" : "recieved"
-                }`}
+                className="message sent"
               >
                 <div className="content ">
                   <p>{message.message}</p>
+                </div>
+              </div>
+              <div
+                className="message received"
+              >
+                <div className="content ">
+                  <p>{message.response}</p>
                 </div>
               </div>
             </div>
@@ -182,13 +163,13 @@ const Container = styled.div`
         }
       }
     }
-    .sended {
+    .sent {
       justify-content: flex-end;
       .content {
         background-color: #4f04ff21;
       }
     }
-    .recieved {
+    .received {
       justify-content: flex-start;
       .content {
         background-color: #9900ff20;
