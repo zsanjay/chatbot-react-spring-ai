@@ -93,6 +93,7 @@ Multi-language support
 # 👨‍💻 Author
 
 Developed by Sanjay Mehta
+
 Feel free to contribute or fork the repo.
 
 
