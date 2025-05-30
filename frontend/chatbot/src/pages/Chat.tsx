@@ -1,9 +1,6 @@
-import React, { useEffect, useState, useRef } from "react";
-import axios from "axios";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { io, Socket } from "socket.io-client";
 import styled from "styled-components";
-import { allUsersRoute, host } from "../utils/APIRoutes";
 import ChatContainer from "../components/ChatContainer";
 import Contacts from "../components/Contacts";
 import Welcome from "../components/Welcome";
@@ -11,14 +8,16 @@ import Welcome from "../components/Welcome";
 interface User {
     _id: string;
     name: string;
+    email : string;
     isAvatarImageSet: boolean;
+    avatarImage : string;
+    messages : any;
 }
 
 
 export default function Chat() {
 
   const navigate = useNavigate();
-  const socket =  useRef<Socket | null>(null);
   const [contacts, setContacts] = useState([]);
   const [currentChat, setCurrentChat] = useState<string>();
   const [currentUser, setCurrentUser] = useState<User>();
@@ -26,38 +25,18 @@ export default function Chat() {
   const appLocalKey =  import.meta.env.VITE_APP_LOCALHOST_KEY;
 
   useEffect(() => {
-    const loadUser =async () => {
+    const loadUser = async () => {
         const stored = localStorage.getItem(appLocalKey);
         if (!stored) {
             navigate("/login");
           } else {
             const user = await JSON.parse(stored);
             setCurrentUser(user);
+            console.log("current user from chat = " + currentUser);
           }
     }
     loadUser();
   }, []);
-
-  useEffect(() => {
-    if (currentUser) {
-      socket.current = io(host);
-      socket.current?.emit("add-user", currentUser._id);
-    }
-  }, [currentUser]);
-
-  useEffect(() => {
-    const setAvatarImage = async () => {
-    if (currentUser) {
-      if (currentUser.isAvatarImageSet) {
-        const data = await axios.get(`${allUsersRoute}/${currentUser._id}`);
-        setContacts(data.data);
-      } else {
-        navigate("/setAvatar");
-      }
-    }
-    }
-    setAvatarImage();
-  }, [currentUser]);
 
   const handleChatChange = (chat : string) => {
     setCurrentChat(chat);
@@ -68,10 +47,10 @@ export default function Chat() {
       <Container>
         <div className="container">
           <Contacts contacts={contacts} changeChat={handleChatChange} />
-          {currentChat === undefined ? (
+          {currentUser === undefined ? (
             <Welcome />
           ) : (
-            <ChatContainer currentChat={currentChat} socket={socket} />
+            <ChatContainer currentChat={currentUser}/>
           )}
         </div>
       </Container>

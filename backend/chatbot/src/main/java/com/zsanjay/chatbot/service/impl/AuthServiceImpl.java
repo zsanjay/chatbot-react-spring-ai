@@ -18,7 +18,7 @@ public class AuthServiceImpl implements AuthService {
         this.userRepository = userRepository;
     }
     @Override
-    public Long register(ChatBotUser chatBotUser) throws UserAlreadyExistsException{
+    public ChatBotUser register(ChatBotUser chatBotUser) throws UserAlreadyExistsException{
         User existingUser = userRepository.findByUsername(chatBotUser.username());
 
         if(Objects.nonNull(existingUser)) {
@@ -30,7 +30,8 @@ public class AuthServiceImpl implements AuthService {
         user.setUsername(chatBotUser.username());
         user.setPassword(chatBotUser.password());
 
-        return userRepository.save(user).getUserId();
+        user = userRepository.save(user);
+        return new ChatBotUser(user.getUserId(), user.getUsername(), user.getEmail(), user.getPassword(), user.isAvatarImageSet(), user.getAvatarImage());
     }
 
     @Override
@@ -43,7 +44,7 @@ public class AuthServiceImpl implements AuthService {
         }
 
         if(user.getPassword().equals(chatBotLoginRequest.password())) {
-            return new ChatBotUser(user.getUsername(), user.getEmail(), user.getPassword());
+            return new ChatBotUser(user.getUserId(), user.getUsername(), user.getEmail(), user.getPassword(), user.isAvatarImageSet(), user.getAvatarImage());
         } else {
             throw new UserNotFoundException("Password is not correct. Please enter the correct password " + chatBotLoginRequest.username());
         }

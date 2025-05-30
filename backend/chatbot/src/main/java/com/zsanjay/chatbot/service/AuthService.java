@@ -6,6 +6,6 @@ import com.zsanjay.chatbot.model.ChatBotLoginRequest;
 import com.zsanjay.chatbot.model.ChatBotUser;
 
 public interface AuthService {
-    Long register(ChatBotUser chatBotUser) throws UserAlreadyExistsException;
+    ChatBotUser register(ChatBotUser chatBotUser) throws UserAlreadyExistsException;
     ChatBotUser login(ChatBotLoginRequest chatBotLoginRequest) throws UserNotFoundException;
 }

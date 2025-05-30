@@ -1,4 +1,4 @@
-import React, { useState, useEffect, type FormEvent } from "react";
+import { useState, useEffect, type FormEvent } from "react";
 import axios from "axios";
 import styled from "styled-components";
 import { useNavigate, Link } from "react-router-dom";
@@ -68,21 +68,23 @@ export default function Register() {
     event.preventDefault();
     if (handleValidation()) {
       const { email, username, password } = values;
-      const { data } = await axios.post(registerRoute, {
-        username,
-        email,
-        password,
-      });
+      try {
+        const response = await axios.post(registerRoute, {
+            username,
+            email,
+            password,
+          });
+        console.log("register response = ", response);
+        
+        if (response.status === 200) {
+            localStorage.setItem(appLocalKey, JSON.stringify(response.data));
+            navigate("/login");
+        }
 
-      if (data.status === false) {
-        toast.error(data.msg, toastOptions);
-      }
-      if (data.status === true) {
-        localStorage.setItem(
-            appLocalKey,
-          JSON.stringify(data.user)
-        );
-        navigate("/");
+      } catch(error : any) {
+        if (error.response.status === 400) {
+            toast.error(error.response.data, toastOptions);
+          }
       }
     }
   };

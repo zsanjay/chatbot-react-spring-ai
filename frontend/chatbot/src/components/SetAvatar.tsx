@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 import axios from "axios";
 import loader from "../assets/loader.gif";
@@ -53,22 +53,25 @@ export default function SetAvatar() {
       return;
     }
 
-    const user = await JSON.parse(appLocalKey);
+    const storedUser =  localStorage.getItem(appLocalKey);
 
-    const { data } = await axios.post(`${setAvatarRoute}/${user._id}`, {
-      image: avatars[selectedAvatar],
-    });
-
-    if (data.isSet) {
-      user.isAvatarImageSet = true;
-      user.avatarImage = data.image;
-      localStorage.setItem(
-        appLocalKey,
-        JSON.stringify(user)
-      );
-      navigate("/");
-    } else {
-      toast.error("Error setting avatar. Please try again.", toastOptions);
+    if(storedUser) {
+        const user = JSON.parse(storedUser);
+        const { data } = await axios.post(`${setAvatarRoute}/${user._id}`, {
+            image: avatars[selectedAvatar],
+          });
+      
+          if (data.isSet) {
+            user.isAvatarImageSet = true;
+            user.avatarImage = data.image;
+            localStorage.setItem(
+              appLocalKey,
+              JSON.stringify(user)
+            );
+            navigate("/");
+          } else {
+            toast.error("Error setting avatar. Please try again.", toastOptions);
+          }
     }
   };
 
