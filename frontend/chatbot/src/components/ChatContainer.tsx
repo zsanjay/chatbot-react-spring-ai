@@ -21,6 +21,7 @@ export default function ChatContainer({ currentChat } : ChatType) {
   const scrollRef = useRef<HTMLDivElement | null>(null);
 
   const appLocalKey =  import.meta.env.VITE_APP_LOCALHOST_KEY;
+  console.log("currentChat " + JSON.stringify(currentChat));
 
   useEffect(() => {
     const loadChat = async () => {
@@ -66,12 +67,12 @@ export default function ChatContainer({ currentChat } : ChatType) {
     <Container>
       <div className="chat-header">
         <div className="user-details">
-          <div className="avatar">
+          { currentChat.avatarImage && <div className="avatar">
             <img
               src={`data:image/svg+xml;base64,${currentChat.avatarImage}`}
               alt=""
             />
-          </div>
+          </div> }
           <div className="username">
             <h3>{currentChat.username}</h3>
           </div>
@@ -79,7 +80,7 @@ export default function ChatContainer({ currentChat } : ChatType) {
         <Logout />
       </div>
       <div className="chat-messages">
-        {messages.map((message) => {
+        {messages.length > 1 && messages.map((message) => {
           return (
             <div ref={scrollRef} key={uuidv4()}>
               <div
@@ -129,7 +130,7 @@ const Container = styled.div`
       }
       .username {
         h3 {
-          color: white;
+          color: mediumblue;
         }
       }
     }
@@ -166,13 +167,13 @@ const Container = styled.div`
     .sent {
       justify-content: flex-end;
       .content {
-        background-color: #4f04ff21;
+        background-color: blueviolet;
       }
     }
     .received {
       justify-content: flex-start;
       .content {
-        background-color: #9900ff20;
+        background-color: darkslateblue;
       }
     }
   }

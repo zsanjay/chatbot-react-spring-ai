@@ -15,9 +15,9 @@ export default function ChatInput({ handleSendMsg } : ChatInputType) {
     setShowEmojiPicker(!showEmojiPicker);
   };
 
-  const handleEmojiClick = (event : any, emojiObject : any) => {
+  const handleEmojiClick = (event : any) => {
     let message = msg;
-    message += emojiObject.emoji;
+    message += event.emoji;
     setMsg(message);
   };
 
@@ -74,12 +74,16 @@ const Container = styled.div`
         color: #ffff00c8;
         cursor: pointer;
       }
-      .emoji-picker-react {
-        position: absolute;
-        top: -350px;
+      .EmojiPickerReact {
+        position: absolute !important;
+        bottom: 125% !important;
+        left : 0 !important;
         background-color: #080420;
         box-shadow: 0 5px 10px #9a86f3;
-        border-color: #9a86f3;
+        border: 1px solid #9a86f3 !important;
+        z-index: 1000 !important;
+        transition: opacity 0.3s ease, transform 0.3s ease !important;
+
         .emoji-scroll-wrapper::-webkit-scrollbar {
           background-color: #080420;
           width: 5px;
@@ -110,7 +114,7 @@ const Container = styled.div`
     gap: 2rem;
     background-color: #ffffff34;
     input {
-      width: 90%;
+      width: 92%;
       height: 60%;
       background-color: transparent;
       color: white;
@@ -131,7 +135,7 @@ const Container = styled.div`
       display: flex;
       justify-content: center;
       align-items: center;
-      background-color: #9a86f3;
+      background-color: #bc6060;
       border: none;
       @media screen and (min-width: 720px) and (max-width: 1080px) {
         padding: 0.3rem 1rem;

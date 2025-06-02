@@ -18,6 +18,7 @@ public class User {
     @CollectionTable(name = "chat_messages", joinColumns = @JoinColumn(name = "user_id"))
     private List<Chat> messages;
     @Lob
+    @Basic(fetch = FetchType.EAGER)
     @Column(name = "avatar_image", columnDefinition = "TEXT")
     private String avatarImage;
     private boolean isAvatarImageSet;

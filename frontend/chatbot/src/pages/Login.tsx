@@ -46,24 +46,32 @@ export default function Login() {
     event.preventDefault();
     if (validateForm()) {
       const { username, password } = values;
-      const response  = await axios.post(loginRoute, {
-        username,
-        password,
-      });
+      try {
+        const response  = await axios.post(loginRoute, {
+            username,
+            password,
+          });
 
-      console.log("login response = " + response);
+          console.log("login response = " + response);
       
-      if (response.status === 401) {
-        toast.error(response.data, toastOptions);
-      }
+      
       if (response.status === 200) {
         localStorage.setItem(
           appLocalKey,
           JSON.stringify(response.data)
         );
-
-        navigate("/");
       }
+      navigate("/");
+
+      } catch(error : any) {
+        if (error.response.status === 401) {
+            toast.error(error.response.data, toastOptions);
+          }
+          setTimeout(() => {
+            navigate("/register");
+          }, 5000)
+      }
+
     }
   };
 
