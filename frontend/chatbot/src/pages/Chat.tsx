@@ -8,54 +8,52 @@ import Welcome from "../components/Welcome";
 interface User {
     _id: string;
     name: string;
-    email : string;
+    email: string;
     isAvatarImageSet: boolean;
-    avatarImage : string;
-    messages : any;
+    avatarImage: string;
+    messages: any;
 }
-
 
 export default function Chat() {
 
-  const navigate = useNavigate();
-  const [contacts, setContacts] = useState([]);
-  const [currentChat, setCurrentChat] = useState<string>();
-  const [currentUser, setCurrentUser] = useState<User>();
+    const navigate = useNavigate();
+    const [contacts, setContacts] = useState([]);
+    const [currentChat, setCurrentChat] = useState<string>();
+    const [currentUser, setCurrentUser] = useState<User>();
 
-  const appLocalKey =  import.meta.env.VITE_APP_LOCALHOST_KEY;
+    const appLocalKey = import.meta.env.VITE_APP_LOCALHOST_KEY;
 
-  useEffect(() => {
-    const loadUser = async () => {
-        const stored = localStorage.getItem(appLocalKey);
-        if (!stored) {
-            navigate("/login");
-          } else {
-            const user = await JSON.parse(stored);
-            setCurrentUser(user);
-            console.log("current user from chat = " + currentUser);
-          }
-    }
-    loadUser();
-  }, []);
+    useEffect(() => {
+        const loadUser = async () => {
+            const stored = localStorage.getItem(appLocalKey);
+            if (!stored) {
+                navigate("/login");
+            } else {
+                const user = await JSON.parse(stored);
+                setCurrentUser(user);
+            }
+        }
+        loadUser();
+    }, []);
 
-  const handleChatChange = (chat : string) => {
-    setCurrentChat(chat);
-  };
+    const handleChatChange = (chat: string) => {
+        setCurrentChat(chat);
+    };
 
-  return (
-    <>
-      <Container>
-        <div className="container">
-          <Contacts contacts={contacts} changeChat={handleChatChange} />
-          {currentUser === undefined ? (
-            <Welcome />
-          ) : (
-            <ChatContainer currentChat={currentUser}/>
-          )}
-        </div>
-      </Container>
-    </>
-  );
+    return (
+        <>
+            <Container>
+                <div className="container">
+                    <Contacts contacts={contacts} changeChat={handleChatChange} />
+                    {currentUser === undefined ? (
+                        <Welcome />
+                    ) : (
+                        <ChatContainer currentChat={currentUser} />
+                    )}
+                </div>
+            </Container>
+        </>
+    );
 }
 
 const Container = styled.div`

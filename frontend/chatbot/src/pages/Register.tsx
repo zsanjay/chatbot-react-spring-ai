@@ -2,134 +2,133 @@ import { useState, useEffect, type FormEvent } from "react";
 import axios from "axios";
 import styled from "styled-components";
 import { useNavigate, Link } from "react-router-dom";
-import Logo from "../assets/logo.svg";
+import Logo from "../assets/chatbot-icon.svg";
 import { ToastContainer, toast, type ToastOptions } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { registerRoute } from "../utils/APIRoutes";
 
 export default function Register() {
 
-  const appLocalKey =  import.meta.env.VITE_APP_LOCALHOST_KEY; 
+    const appLocalKey = import.meta.env.VITE_APP_LOCALHOST_KEY;
 
-  const navigate = useNavigate();
-  const toastOptions : ToastOptions = {
-    position: "bottom-right",
-    autoClose: 8000,
-    pauseOnHover: true,
-    draggable: true,
-    theme: "dark",
-  };
-  const [values, setValues] = useState({
-    username: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
-  });
+    const navigate = useNavigate();
+    const toastOptions: ToastOptions = {
+        position: "bottom-right",
+        autoClose: 8000,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "dark",
+    };
+    const [values, setValues] = useState({
+        username: "",
+        email: "",
+        password: "",
+        confirmPassword: "",
+    });
 
-  useEffect(() => {
-    if (localStorage.getItem(appLocalKey)) {
-      navigate("/");
-    }
-  }, []);
+    useEffect(() => {
+        if (localStorage.getItem(appLocalKey)) {
+            navigate("/");
+        }
+    }, []);
 
-  const handleChange = (event : any) => {
-    setValues({ ...values, [event.target.name]: event.target.value });
-  };
+    const handleChange = (event: any) => {
+        setValues({ ...values, [event.target.name]: event.target.value });
+    };
 
-  const handleValidation = () => {
-    const { password, confirmPassword, username, email } = values;
-    if (password !== confirmPassword) {
-      toast.error(
-        "Password and confirm password should be same.",
-        toastOptions
-      );
-      return false;
-    } else if (username.length < 3) {
-      toast.error(
-        "Username should be greater than 3 characters.",
-        toastOptions
-      );
-      return false;
-    } else if (password.length < 8) {
-      toast.error(
-        "Password should be equal or greater than 8 characters.",
-        toastOptions
-      );
-      return false;
-    } else if (email === "") {
-      toast.error("Email is required.", toastOptions);
-      return false;
-    }
-
-    return true;
-  };
-
-  const handleSubmit = async (event : FormEvent) => {
-    event.preventDefault();
-    if (handleValidation()) {
-      const { email, username, password } = values;
-      try {
-        const response = await axios.post(registerRoute, {
-            username,
-            email,
-            password,
-          });
-        console.log("register response = ", response);
-        
-        if (response.status === 200) {
-            localStorage.setItem(appLocalKey, JSON.stringify(response.data));
-            navigate("/login");
+    const handleValidation = () => {
+        const { password, confirmPassword, username, email } = values;
+        if (password !== confirmPassword) {
+            toast.error(
+                "Password and confirm password should be same.",
+                toastOptions
+            );
+            return false;
+        } else if (username.length < 3) {
+            toast.error(
+                "Username should be greater than 3 characters.",
+                toastOptions
+            );
+            return false;
+        } else if (password.length < 8) {
+            toast.error(
+                "Password should be equal or greater than 8 characters.",
+                toastOptions
+            );
+            return false;
+        } else if (email === "") {
+            toast.error("Email is required.", toastOptions);
+            return false;
         }
 
-      } catch(error : any) {
-        if (error.response.status === 400) {
-            toast.error(error.response.data, toastOptions);
-          }
-      }
-    }
-  };
+        return true;
+    };
 
-  return (
-    <>
-      <FormContainer>
-        <form action="" onSubmit={(event : FormEvent) => handleSubmit(event)}>
-          <div className="brand">
-            <img src={Logo} alt="logo" />
-            <h1>snappy</h1>
-          </div>
-          <input
-            type="text"
-            placeholder="Username"
-            name="username"
-            onChange={(e) => handleChange(e)}
-          />
-          <input
-            type="email"
-            placeholder="Email"
-            name="email"
-            onChange={(e) => handleChange(e)}
-          />
-          <input
-            type="password"
-            placeholder="Password"
-            name="password"
-            onChange={(e) => handleChange(e)}
-          />
-          <input
-            type="password"
-            placeholder="Confirm Password"
-            name="confirmPassword"
-            onChange={(e) => handleChange(e)}
-          />
-          <button type="submit">Create User</button>
-          <span>
-            Already have an account ? <Link to="/login">Login.</Link>
-          </span>
-        </form>
-      </FormContainer>
-      <ToastContainer />
-    </>
-  );
+    const handleSubmit = async (event: FormEvent) => {
+        event.preventDefault();
+        if (handleValidation()) {
+            const { email, username, password } = values;
+            try {
+                const response = await axios.post(registerRoute, {
+                    username,
+                    email,
+                    password,
+                });
+
+                if (response.status === 200) {
+                    localStorage.setItem(appLocalKey, JSON.stringify(response.data));
+                    navigate("/login");
+                }
+
+            } catch (error: any) {
+                if (error.response.status === 400) {
+                    toast.error(error.response.data, toastOptions);
+                }
+            }
+        }
+    };
+
+    return (
+        <>
+            <FormContainer>
+                <form action="" onSubmit={(event: FormEvent) => handleSubmit(event)}>
+                    <div className="brand">
+                        <img src={Logo} alt="logo" />
+                        <h1>ChatBuddy</h1>
+                    </div>
+                    <input
+                        type="text"
+                        placeholder="Username"
+                        name="username"
+                        onChange={(e) => handleChange(e)}
+                    />
+                    <input
+                        type="email"
+                        placeholder="Email"
+                        name="email"
+                        onChange={(e) => handleChange(e)}
+                    />
+                    <input
+                        type="password"
+                        placeholder="Password"
+                        name="password"
+                        onChange={(e) => handleChange(e)}
+                    />
+                    <input
+                        type="password"
+                        placeholder="Confirm Password"
+                        name="confirmPassword"
+                        onChange={(e) => handleChange(e)}
+                    />
+                    <button type="submit">Create User</button>
+                    <span>
+                        Already have an account ? <Link to="/login">Login.</Link>
+                    </span>
+                </form>
+            </FormContainer>
+            <ToastContainer />
+        </>
+    );
 }
 
 const FormContainer = styled.div`
@@ -150,7 +149,7 @@ const FormContainer = styled.div`
       height: 5rem;
     }
     h1 {
-      color: white;
+      color: blueviolet;
       text-transform: uppercase;
     }
   }
@@ -159,21 +158,22 @@ const FormContainer = styled.div`
     display: flex;
     flex-direction: column;
     gap: 2rem;
-    background-color: #00000076;
+    background-color: aquamarine;
     border-radius: 2rem;
     padding: 3rem 5rem;
   }
   input {
-    background-color: transparent;
+    background-color: beige;
     padding: 1rem;
     border: 0.1rem solid #4e0eff;
     border-radius: 0.4rem;
-    color: white;
+    color: black;
     width: 100%;
     font-size: 1rem;
     &:focus {
       border: 0.1rem solid #997af0;
       outline: none;
+      color : black;
     }
   }
   button {
@@ -191,7 +191,7 @@ const FormContainer = styled.div`
     }
   }
   span {
-    color: white;
+    color: #4e0eff;
     text-transform: uppercase;
     a {
       color: #4e0eff;

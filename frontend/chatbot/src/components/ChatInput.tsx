@@ -1,27 +1,27 @@
-import React, { useState, type FormEvent } from "react";
+import { useState, type FormEvent } from "react";
 import { BsEmojiSmileFill } from "react-icons/bs";
 import { IoMdSend } from "react-icons/io";
 import styled from "styled-components";
 import Picker from "emoji-picker-react";
 
 interface ChatInputType {
-    handleSendMsg : any;
+  handleSendMsg: any;
 }
 
-export default function ChatInput({ handleSendMsg } : ChatInputType) {
+export default function ChatInput({ handleSendMsg }: ChatInputType) {
   const [msg, setMsg] = useState("");
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const handleEmojiPickerhideShow = () => {
     setShowEmojiPicker(!showEmojiPicker);
   };
 
-  const handleEmojiClick = (event : any) => {
+  const handleEmojiClick = (event: any) => {
     let message = msg;
     message += event.emoji;
     setMsg(message);
   };
 
-  const sendChat = (event : FormEvent) => {
+  const sendChat = (event: FormEvent) => {
     event.preventDefault();
     if (msg.length > 0) {
       handleSendMsg(msg);

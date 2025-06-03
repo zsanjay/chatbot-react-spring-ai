@@ -58,7 +58,6 @@ public class User {
     public String getAvatarImage() {
         return avatarImage;
     }
-
     public void setAvatarImage(String avatarImage) {
         this.avatarImage = avatarImage;
     }
