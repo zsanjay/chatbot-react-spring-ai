@@ -49,4 +49,9 @@ public class AuthServiceImpl implements AuthService {
             throw new UserNotFoundException("Password is not correct. Please enter the correct password " + chatBotLoginRequest.username());
         }
     }
+
+    @Override
+    public void logout(Long userId) throws UserNotFoundException {
+        userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("User doesn't exist with the userId = " + userId));
+    }
 }

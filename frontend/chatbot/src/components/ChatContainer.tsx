@@ -7,109 +7,110 @@ import axios from "axios";
 import { chatRoute } from "../utils/APIRoutes";
 
 interface Message {
-    message : string,
-    response : string
+    message: string,
+    response: string
 }
 
 interface ChatType {
-    currentChat : any
+    currentChat: any
 }
 
-export default function ChatContainer({ currentChat } : ChatType) {
+export default function ChatContainer({ currentChat }: ChatType) {
 
-  const [messages, setMessages] = useState<Message[]>([]);
-  const scrollRef = useRef<HTMLDivElement | null>(null);
+    const [messages, setMessages] = useState<Message[]>([]);
+    const scrollRef = useRef<HTMLDivElement | null>(null);
 
-  const appLocalKey =  import.meta.env.VITE_APP_LOCALHOST_KEY;
+    const appLocalKey = import.meta.env.VITE_APP_LOCALHOST_KEY;
 
-  useEffect(() => {
-    const loadChat = async () => {
+    useEffect(() => {
+        const loadChat = async () => {
+            const stored = localStorage.getItem(appLocalKey) || '';
+            const data = await JSON.parse(stored);
+            const response = await axios.get(`${chatRoute}/${data._id}`);
+            setMessages(response.data);
+        }
+
+        loadChat();
+    }, [currentChat]);
+
+    useEffect(() => {
+        const stored = localStorage.getItem(appLocalKey) || '';
+        const getCurrentChat = async () => {
+            if (currentChat) {
+                await JSON.parse(stored)._id;
+            }
+        };
+        getCurrentChat();
+    }, [currentChat]);
+
+    const handleSendMsg = async (msg: string) => {
+
         const stored = localStorage.getItem(appLocalKey) || '';
         const data = await JSON.parse(stored);
-        const response = await axios.get(`${chatRoute}/${data._id}`); 
-        setMessages(response.data);
-      }
 
-      loadChat();
-  }, [currentChat]);
+        const response = await axios.post(chatRoute, {
+            userId: data._id,
+            message: msg,
+        });
 
-  useEffect(() => {
-    const stored = localStorage.getItem(appLocalKey) || '';
-    const getCurrentChat = async () => {
-      if (currentChat) {
-        await JSON.parse(stored)._id;
-      }
+        const msgs = [...messages];
+        msgs.push(response.data);
+        setMessages(msgs);
     };
-    getCurrentChat();
-  }, [currentChat]);
 
-  const handleSendMsg = async (msg : string) => {
+    useEffect(() => {
+        scrollRef.current?.scrollIntoView({ behavior: "smooth" });
+    }, [messages]);
 
-    const stored = localStorage.getItem(appLocalKey) || '';
-    const data = await JSON.parse(stored);
-
-    const response = await axios.post(chatRoute, {
-      userId: data._id,
-      message: msg,
-    });
-
-    const msgs = [...messages];
-    msgs.push(response.data);
-    setMessages(msgs);
-  };
-
-  useEffect(() => {
-    scrollRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
-
-  return (
-    <Container>
-      <div className="chat-header">
-        <div className="user-details">
-          <div className="avatar">
-            <img
-              src={`data:image/svg+xml;base64,${currentChat.avatarImage}`}
-              alt=""
-            />
-          </div>
-          <div className="username">
-            <h3>{currentChat.username}</h3>
-          </div>
-        </div>
-        <Logout />
-      </div>
-      <div className="chat-messages">
-        {messages.map((message) => {
-          return (
-            <div ref={scrollRef} key={uuidv4()}>
-              <div
-                className="message sent"
-              >
-                <div className="content ">
-                  <p>{message.message}</p>
+    return (
+        <Container>
+            <div className="chat-header">
+                <div className="user-details">
+                    {currentChat.avatarImage && <div className="avatar">
+                        <img
+                            src={`data:image/svg+xml;base64,${currentChat.avatarImage}`}
+                            alt=""
+                        />
+                    </div>}
+                    <div className="username">
+                        <h3>{currentChat.username}</h3>
+                    </div>
                 </div>
-              </div>
-              <div
-                className="message received"
-              >
-                <div className="content ">
-                  <p>{message.response}</p>
-                </div>
-              </div>
+                <Logout />
             </div>
-          );
-        })}
-      </div>
-      <ChatInput handleSendMsg={handleSendMsg} />
-    </Container>
-  );
+            <div className="chat-messages">
+                {messages.length > 0 && messages.map((message) => {
+                    return (
+                        <div ref={scrollRef} key={uuidv4()}>
+                            <div
+                                className="message sent"
+                            >
+                                <div className="content ">
+                                    <p>{message.message}</p>
+                                </div>
+                            </div>
+                            <div
+                                className="message received"
+                            >
+                                <div className="content ">
+                                    <p>{message.response}</p>
+                                </div>
+                            </div>
+                        </div>
+                    );
+                })}
+            </div>
+            <ChatInput handleSendMsg={handleSendMsg} />
+        </Container>
+    );
 }
 
 const Container = styled.div`
   display: grid;
-  grid-template-rows: 10% 80% 10%;
+  grid-template-rows: 8% 80% 11%;
   gap: 0.1rem;
   overflow: hidden;
+  width: -webkit-fill-available;
   @media screen and (min-width: 720px) and (max-width: 1080px) {
     grid-template-rows: 15% 70% 15%;
   }
@@ -129,7 +130,7 @@ const Container = styled.div`
       }
       .username {
         h3 {
-          color: white;
+          color: #15ad53;
         }
       }
     }
@@ -166,13 +167,13 @@ const Container = styled.div`
     .sent {
       justify-content: flex-end;
       .content {
-        background-color: #4f04ff21;
+        background-color: blueviolet;
       }
     }
     .received {
       justify-content: flex-start;
       .content {
-        background-color: #9900ff20;
+        background-color: darkslateblue;
       }
     }
   }

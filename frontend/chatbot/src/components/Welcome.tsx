@@ -9,9 +9,9 @@ export default function Welcome() {
 
   useEffect(() => {
     async () => {
-        const stored = localStorage.getItem(appLocalKey) || '';
-        setUserName(await JSON.parse(stored).username);
-      }
+      const stored = localStorage.getItem(appLocalKey) || '';
+      setUserName(await JSON.parse(stored).username);
+    }
   }, []);
   return (
     <Container>

@@ -1,33 +1,33 @@
 import { useState, useEffect } from "react";
 import styled from "styled-components";
-import Logo from "../assets/logo.svg";
+import Logo from "../assets/chatbot-icon.svg";
 
 interface ContactsType {
-    contacts : any,
-    changeChat : any
+  contacts: any,
+  changeChat: any
 }
 
-export default function Contacts({ contacts, changeChat } : ContactsType) {
+export default function Contacts({ contacts, changeChat }: ContactsType) {
 
   const [currentUserName, setCurrentUserName] = useState<string>();
   const [currentUserImage, setCurrentUserImage] = useState<any>();
   const [currentSelected, setCurrentSelected] = useState<number>();
 
-  const appLocalKey =  import.meta.env.VITE_APP_LOCALHOST_KEY;
+  const appLocalKey = import.meta.env.VITE_APP_LOCALHOST_KEY;
 
   useEffect(() => {
     const loadContact = async () => {
-        const stored = localStorage.getItem(appLocalKey) || null;
-        if(stored) {
-          const data = await JSON.parse(stored);
-          setCurrentUserName(data.username);
-          setCurrentUserImage(data.avatarImage);
-        }
+      const stored = localStorage.getItem(appLocalKey) || null;
+      if (stored) {
+        const data = await JSON.parse(stored);
+        setCurrentUserName(data.username);
+        setCurrentUserImage(data.avatarImage);
+      }
     }
     loadContact();
-    }, []);
-  
-  const changeCurrentChat = (index : number, contact : any) => {
+  }, []);
+
+  const changeCurrentChat = (index: number, contact: any) => {
     setCurrentSelected(index);
     changeChat(contact);
   };
@@ -37,16 +37,15 @@ export default function Contacts({ contacts, changeChat } : ContactsType) {
         <Container>
           <div className="brand">
             <img src={Logo} alt="logo" />
-            <h3>snappy</h3>
+            <h3>ChatBuddy</h3>
           </div>
           <div className="contacts">
-            {contacts.map((contact : any, index : number) => {
+            {contacts.map((contact: any, index: number) => {
               return (
                 <div
                   key={contact._id}
-                  className={`contact ${
-                    index === currentSelected ? "selected" : ""
-                  }`}
+                  className={`contact ${index === currentSelected ? "selected" : ""
+                    }`}
                   onClick={() => changeCurrentChat(index, contact)}
                 >
                   <div className="avatar">

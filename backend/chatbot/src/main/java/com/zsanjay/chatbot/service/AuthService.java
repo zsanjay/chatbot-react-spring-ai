@@ -8,4 +8,5 @@ import com.zsanjay.chatbot.model.ChatBotUser;
 public interface AuthService {
     ChatBotUser register(ChatBotUser chatBotUser) throws UserAlreadyExistsException;
     ChatBotUser login(ChatBotLoginRequest chatBotLoginRequest) throws UserNotFoundException;
+    void logout(Long userId) throws UserNotFoundException;
 }
