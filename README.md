@@ -80,6 +80,21 @@ Ensure axios points to the backend URL:
 const BASE_URL = "http://localhost:8080/api/chat";
 ```
 
+# Screenshots
+
+## 1. Login Page
+
+<img width="1189" alt="Screenshot 2025-06-03 at 7 49 24 PM" src="https://github.com/user-attachments/assets/1deb719c-8961-4439-aa74-5c763203a8b7" />
+
+## 2. Registration Page
+
+<img width="1189" alt="Screenshot 2025-06-03 at 7 49 37 PM" src="https://github.com/user-attachments/assets/0353a644-6d8c-4786-a81f-c082ec40c91d" />
+
+## 3. Chat Page
+
+<img width="1580" alt="Screenshot 2025-06-03 at 7 56 21 PM" src="https://github.com/user-attachments/assets/ed951875-b16d-4428-8165-c1e4bd244df3" />
+
+
 # 🧩 Future Enhancements
 
 User authentication (JWT)
